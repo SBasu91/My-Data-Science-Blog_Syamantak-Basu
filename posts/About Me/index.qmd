@@ -1,0 +1,21 @@
+---
+title: "About Me"
+author: "Syamantak Basu"
+date: "2023-11-07"
+categories: [Introduction]
+image: "Syamantak.jpeg"  
+---
+
+**Hi, I'm Syamantakshobhan Basu, and this is my Data Science Blog**
+
+I'm a 2nd-year PhD student in the Department of English at the University of Illinois at Urbana-Champaign. A recent immigrant, my home country is India, and I carry an interest in a wide range of subjects into my degree. Having studied English literature at the undergraduate and graduate levels, I've branched out into film and media studies, digital humanities and for the last two years have been training myself in methods and approaches in Information Science. I hope to combine critical theory and IS/DH methods to critically analyze the relationship between the technosphere, nationalism and neoliberalism/globalization in India post 1947. Before starting my PhD I used to work as a copyeditor and proofreader at an academic publishing house, and I hope to use those skills in my PhD as well.
+
+Through my coursework I've been able to achieve a good balance between literary and sociological theory and methods in Digital Humanities. As Illinois Distinguished Fellow, I hope to utilize the resources available to me to do more meaningful research bridging the humanities and technology studies.
+
+Besides academics, I'm interested in films (both watching and making them), video games and music. I don't read as much outside of work as I used to, but I still love science fiction and fantasy, and I love football to death (I mean the European kind, I refuse to call it soccer!) I also play the guitar and used to sing in a band. I miss those days sometimes, but maybe I'll get a chance sometime soon! I'm also a Star Wars fanatic, and enjoy watching everything SW with a group of like-minded fans every week.
+
+Looking forward to recording many evenings of cats, coding and coffee here.
+
+-Syamantak
+
+Nov 7, 2023

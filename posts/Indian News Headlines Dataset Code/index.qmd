@@ -1,0 +1,151 @@
+---
+title: "Indian News Headlines Dataset"
+author: "Syamantak Basu"
+date: "2023-11-05"
+categories: [news, code, analysis]
+image: "Image2.jpg"
+---
+
+This is a post with executable code.
+
+For this post I will be using the Indian News Headlines Dataset, an open-source dataset which is a "persistent historical archive of noteable events in the Indian subcontinent from start-2001 to q1-2022, recorded in real-time by the journalists of India" and contains approx 3.6 million headline events. The dataset was prepared by Rohit Kulkarni and is available in the public domain with a CCO 1.0 DEED license (universal).
+
+**The dataset is periodically updated and may be found here**:https://www.kaggle.com/datasets/therohk/india-headlines-news-dataset
+
+**Photo credit**: Markus Spike on Pixabay (https://pixabay.com/photos/newspaper-coffee-vintage-retro-595478/)
+
+```{r, echo=TRUE, eval=TRUE}
+
+data <- read.csv("/Users/syamantakbasu91/Desktop/IS 407 assignments/My Data Science Blog_Syamantak Basu/india-news-headlines.csv")
+```
+
+```{r}
+
+# I want to explore the correlations between the relationship between the words poverty and digital (with Digital India being a major buzzword since 2014), poverty and farming, and farming and digital. Thereafter I will visualize the correlation through bar graphs.
+
+# Preprocessing the dataset to count word occurrences
+word1 <- 'poverty'
+word2 <- 'digital'
+word3 <- 'farming'
+
+data$word1_count <- sapply(data$headline_text, function(text) sum(grepl(word1, text, ignore.case = TRUE)))
+data$word2_count <- sapply(data$headline_text, function(text) sum(grepl(word2, text, ignore.case = TRUE)))
+data$word3_count <- sapply(data$headline_text, function(text) sum(grepl(word3, text, ignore.case = TRUE)))
+
+# Calculating the correlations between the three words
+correlation_word1_word2 <- cor(data$word1_count, data$word2_count)
+correlation_word1_word3 <- cor(data$word1_count, data$word3_count)
+correlation_word2_word3 <- cor(data$word2_count, data$word3_count)
+
+# Visualizing the correlations
+# Loading the ggplot2 library
+library(ggplot2)
+
+correlation_data <- data.frame(
+  Pair = c("word1-word2", "word1-word3", "word2-word3"),
+  Correlation = c(correlation_word1_word2, correlation_word1_word3, correlation_word2_word3),
+  Word_Pair = c(paste(word1, "-", word2), paste(word1, "-", word3), paste(word2, "-", word3))
+)
+
+# Creating a named vector for custom colors
+color_mapping <- setNames(c("red", "blue", "green"), c(
+  paste(word1, "-", word2),
+  paste(word1, "-", word3),
+  paste(word2, "-", word3)
+))
+
+# Creating a grouped bar chart with actual word pair names in the legend
+ggplot(correlation_data, aes(x = Pair, y = Correlation, fill = Word_Pair)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Correlations between Word Pairs") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_fill_manual(values = color_mapping) +
+  guides(fill = guide_legend(title = "Word Pair"))
+```
+
+```{r}
+#Finding the top 3 words occurring in the headlines
+# Loading the necessary libraries
+
+library(tidytext)
+library(readr)
+library(dplyr)
+
+# Tokenizing the text into words
+data %>%
+  mutate(headline_text = tolower(headline_text)) %>%  # Converting to lowercase for case insensitivity
+  unnest_tokens(word, headline_text, token = "words") %>%
+
+  # Filtering out common stopwords if needed
+  anti_join(stop_words) %>%
+
+  # Counting word occurrences
+  count(word, sort = TRUE) %>%
+
+  # Selecting the top three words
+  head(3)
+```
+
+```{r}
+
+#Visualizing the top 3 words as a scatterplot
+# Tokenizing the text into words and counting word occurrences
+word_frequencies <- data %>%
+  mutate(headline_text = tolower(headline_text)) %>%  # Converting to lowercase for case insensitivity
+  unnest_tokens(word, headline_text, token = "words") %>%
+  # Filtering out common stopwords if needed
+  anti_join(stop_words) %>%
+  count(word, sort = TRUE)
+
+# Selecting the top three words
+top_words <- head(word_frequencies, 3)
+
+# Defining a color palette for the top three words
+word_colors <- c("red", "blue", "green")
+
+# Creating a scatterplot of the top three words with colors
+ggplot(top_words, aes(x = reorder(word, -n), y = n, fill = word)) +
+  geom_point(shape = 21, size = 4) +  # Customizing shape and size of points
+  scale_fill_manual(values = word_colors) +  # Assigning colors to words
+  labs(x = "Word", y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+```{r}
+# Visualizing the top 3 words together with the three custom words of my choosing as a scatterplot
+
+# Defining the additional words
+additional_words <- c("poverty", "farming", "digital")
+
+# Filtering and counting the frequencies of the additional words
+additional_word_frequencies <- data %>%
+  mutate(headline_text = tolower(headline_text)) %>%
+  unnest_tokens(word, headline_text, token = "words") %>%
+  filter(word %in% additional_words) %>%
+  count(word, sort = TRUE)
+
+# Combining the top words and additional words
+all_words <- rbind(top_words, additional_word_frequencies)
+
+# Defining a color palette for the words
+word_colors <- c("red", "blue", "green", "orange", "purple", "cyan")
+
+# Creating a scatterplot of all words with colors
+
+ggplot(all_words, aes(x = reorder(word, -n), y = n, fill = word)) +
+  geom_point(shape = 21, size = 4) +
+  scale_fill_manual(values = word_colors) +
+  labs(x = "Word", y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+```{r}
+# Visualizing the occurences of all six words as a histogram
+
+ggplot(all_words, aes(x = word, y = n, fill = word)) +
+  geom_bar(stat = "identity") +
+  scale_fill_manual(values = word_colors) +  # Assigning colors to the words
+  labs(x = "Word", y = "Frequency") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
